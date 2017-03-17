@@ -1,7 +1,7 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 from math import pi, sqrt, radians
-from random import randint
+
 
 class Bike(object):
 
@@ -19,7 +19,6 @@ class Bike(object):
         self.health = 100
         self.win = False
         self.lamps_r = lamps_r
-        #self.manholes = manholes
 
     def borders(self):
         if self.px > 3900:
@@ -44,17 +43,14 @@ class Bike(object):
             if dist < 2:
                 self.vx, self.vy = 0, 0
 
-        #for tup in self.manholes.values():
-        #    dist = sqrt((self.px + tup[0][0])**2 + (self.py + tup[0][1])**2)
-        #    if dist < 3:
-        #        #self.vx, self.vy = randint(-1, 1), randint(-1, 1)
-        #        self.angle += radians(randint(-3, 3))
-        #        #self.acc = 0
-
     def game_over_win(self):
         self.win = True
 
-    
+    @staticmethod
+    def get_frame(angle):
+        # Subtract 3, because texture template doesn't on 0 angle.
+        return int(angle / radians(18) - 3) % 20
+
     def physics(self, hop):
         self.hop = hop
 
@@ -66,7 +62,6 @@ class Bike(object):
         else:
             self.offset = 0
 
-        
         if abs(self.acc) > 0.0001:
             self.acc = self.acc*0.9
 
@@ -80,47 +75,8 @@ class Bike(object):
             self.angle = radians(0)
         elif self.angle < radians(0):
             self.angle = radians(360)
-        
-        if self.angle > radians(72) and self.angle < radians(90):
-            self.frame = 0
-        if self.angle > radians(90) and self.angle < radians(108):
-            self.frame = 1
-        if self.angle > radians(108) and self.angle < radians(126):
-            self.frame = 2
-        if self.angle > radians(126) and self.angle < radians(144):
-            self.frame = 3
-        if self.angle > radians(144) and self.angle < radians(162):
-            self.frame = 4
-        if self.angle > radians(162) and self.angle < radians(180):
-            self.frame = 5
-        if self.angle > radians(180) and self.angle < radians(198):
-            self.frame = 6
-        if self.angle > radians(198) and self.angle < radians(216):
-            self.frame = 7
-        if self.angle > radians(216) and self.angle < radians(234):
-            self.frame = 8
-        if self.angle > radians(234) and self.angle < radians(252):
-            self.frame = 9
-        if self.angle > radians(252) and self.angle < radians(270):
-            self.frame = 10
-        if self.angle > radians(270) and self.angle < radians(288):
-            self.frame = 11
-        if self.angle > radians(288) and self.angle < radians(306):
-            self.frame = 12
-        if self.angle > radians(306) and self.angle < radians(324):
-            self.frame = 13
-        if self.angle > radians(324) and self.angle < radians(342):
-            self.frame = 14
-        if self.angle > radians(342) and self.angle < radians(360):
-            self.frame = 15
-        if self.angle > radians(0) and self.angle < radians(18):
-            self.frame = 16
-        if self.angle > radians(18) and self.angle < radians(36):
-            self.frame = 17
-        if self.angle > radians(36) and self.angle < radians(54):
-            self.frame = 18
-        if self.angle > radians(54) and self.angle < radians(72):
-            self.frame = 19
+
+        self.frame = self.get_frame(self.angle)
+        print(self.frame)
 
         return self.hop
-

@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import pygame
 from pygame.locals import *
@@ -7,7 +7,7 @@ from utils import *
 
 
 class Font(object):
-    
+
     def __init__(self, fil):
         self.fil = fil
         self.img = pygame.image.load(self.fil)
@@ -27,7 +27,7 @@ class Font(object):
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.width, self.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, self.img_to_str)
         self.prepare()
-        
+
     def prepare(self):
         x = 0
         for a in range(ord(u' '), ord(u'Ž')):
@@ -67,8 +67,7 @@ class Font(object):
             lis = self.lists[ord(text[c])-ord(u' ')]
             glCallList(lis)
             c += 1
-            
-        
+
 
 class Tex(Convert):
 
@@ -87,7 +86,7 @@ class Tex(Convert):
         self.r = self.img.get_rect()
         self.rect = rect
         self.howfar = 300 #viewing distance
-        
+
         self.identify_objects()        
         glEnable(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, self.tex_obj)
@@ -95,9 +94,9 @@ class Tex(Convert):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.width, self.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, self.img_to_str)
-        
+
     def identify_objects(self):
-        
+
         if "barierka" in self.fil:
 
             for obj in self.cd.values():
@@ -321,7 +320,7 @@ class Tex(Convert):
 
 
 class TexSimple(object):
-    
+
     def __init__(self, coord_list, fil, static=False, shift=False):
         self.c = Convert()
         self.coord_list = coord_list
@@ -336,31 +335,28 @@ class TexSimple(object):
         self.tex_obj = glGenTextures(1)
         self.r = self.img.get_rect()
         self.howfar = 300
-        
+
         glBindTexture(GL_TEXTURE_2D, self.tex_obj)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.width, self.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, self.img_to_str)
-        
-        
+
         if not self.shift:
             self.shift = (int(self.width/4), -int(self.height/4), \
                            -int(self.width/4), -int(self.height/4), \
                            -int(self.width/4), int(self.height/4), \
                             int(self.width/4), int(self.height/4))
-        
-        #Try to iterate an object that stores coordinates. 
-	#If you encounter an exception, the object is probably a tuple, not a list.
+        # Try to iterate an object that stores coordinates. 
+        # If you encounter an exception, the object is probably a tuple, not a list.
         if self.static:
-            self.flat(self.coord_list)        
-        else:        
+            self.flat(self.coord_list)
+        else:
             try:
                 for obj in self.coord_list:
                     self.perspective(obj)
             except (TypeError):
                 self.perspective(self.coord_list)
-                
-        
+
     def perspective(self, o):
         coords = self.c.to_screen_int(*o)
         listgl = glGenLists(1)
@@ -408,7 +404,7 @@ class TexSimple(object):
         glEndList()
         self.lists = []
         self.lists.append(listgl)
-        
+
     def show(self, xx, yy, bikex):
         for num, lis in self.lists.items():
             dist = abs(num) - abs(bikex)
@@ -416,13 +412,13 @@ class TexSimple(object):
                 glLoadIdentity()
                 glTranslatef(xx, yy, 0)
                 glCallList(lis)
-            
+
     def show_button(self, hover=False):
         glLoadIdentity()
         if hover:
             glTranslatef(1, 1, 0)
         glCallList(self.lists[0])
-        
+
 
 class BikeTex(object):
 
@@ -435,7 +431,7 @@ class BikeTex(object):
         self.r = self.img.get_rect()
         self.width = self.img.get_width()
         self.height = self.img.get_height()
-        
+
         glBindTexture(GL_TEXTURE_2D, self.tex_obj)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
@@ -466,7 +462,7 @@ class BikeTex(object):
         glDisable(GL_TEXTURE_2D)
         glEndList()
         
-    def show(self, xx, yy):    
+    def show(self, xx, yy):
         glLoadIdentity()
         glTranslatef(xx, yy, 0)
         glCallList(self.listgl)
@@ -485,14 +481,13 @@ class Background(object):
         self.img_to_str = pygame.image.tostring(self.img, "RGBA", 0)
         self.tex_obj = glGenTextures(1, self.img)
         self.r = self.img.get_rect()
-
         glBindTexture(GL_TEXTURE_2D, self.tex_obj)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.width, self.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, self.img_to_str)
         
         self.back()
-    
+
     def back(self):
         self.listgl = glGenLists(1)
         glNewList(self.listgl, GL_COMPILE)
@@ -518,7 +513,7 @@ class Background(object):
         glEnd()
         glDisable(GL_TEXTURE_2D)
         glEndList()
-        
+
 
     def show(self, xx, yy):
         glLoadIdentity()
