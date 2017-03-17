@@ -48,7 +48,7 @@ class Bike(object):
 
     @staticmethod
     def get_frame(angle):
-        # Subtract 3, because texture template doesn't on 0 angle.
+        # Subtract 3, because texture template doesn't start on 0 angle.
         return int(angle / radians(18) - 3) % 20
 
     def physics(self, hop):
@@ -77,6 +77,5 @@ class Bike(object):
             self.angle = radians(360)
 
         self.frame = self.get_frame(self.angle)
-        print(self.frame)
 
         return self.hop
