@@ -6,14 +6,16 @@ from textures import *
 from primitives import *
 from utils import *
 
+
 class Surf(object):
+
     def __init__(self):
         pygame.init()
         pygame.display.set_caption('Poniat v0.7')
         num = 0
         self.modes = pygame.display.list_modes(32)
-        
-        #Let's not use too big resolution
+
+        # Let's not use too big resolution
         if self.modes[num] > (1920, 1080):
             self.win_w = 1920
             self.win_w = 1080
@@ -70,7 +72,7 @@ class MapModel(object):
         self.map.lock()
         self.w, self.h = self.map.get_size()
         self.parse_pixels()
-       
+
     def sew_lanes(self, lane, obj, x, y):
         if len(obj) == 4 and len(lane) == 0:
             lane[1] = obj
@@ -84,7 +86,7 @@ class MapModel(object):
             lane[ld+1] = (lane[ld][-2], lane[ld][-1], obj[-2], obj[-1])
             obj = obj[:0]
         return lane, obj
-            
+
     def parse_pixels(self):
         obj1, obj2, obj3, obj4, obj5, obj6, obj7 = [], [], [], [], [], [], []
         for x in range(self.w):
@@ -99,15 +101,12 @@ class MapModel(object):
                     self.pavl_dic, obj3 = self.sew_lanes(self.pavl_dic, obj3, x, y)
                 elif (r, g, b) == (100, 100, 254):
                     self.tram_dic, obj7 = self.sew_lanes(self.tram_dic, obj7, x, y)
-                #Teraz lewe pasy    
                 elif (r, g, b) == (254, 0, 0):
                     self.lane1l_dic, obj4 = self.sew_lanes(self.lane1l_dic, obj4, x, y)
-                elif (r, g, b) == (0, 254, 0):                
+                elif (r, g, b) == (0, 254, 0):
                     self.lane2l_dic, obj5 = self.sew_lanes(self.lane2l_dic, obj5, x, y)
                 elif (r, g, b) == (0, 255, 254):
                     self.pavr_dic, obj6 = self.sew_lanes(self.pavr_dic, obj6, x, y)
-                #elif (r, g, b) == (150, 150, 150):
-                #    self.manhole_dic[-x] = ((-x, -y), (-x, -y-4), (-x-4, -y), (-x-4, -y-4))
                 elif (r, g, b) == (255, 0, 255):
                     self.lampr_dic.append((x, y))
                 elif (r, g, b) == (100, 0, 255):
@@ -128,7 +127,7 @@ class MapModel(object):
                     self.junctionl = (-x, -y)
                 elif (r, g, b) == (100, 100, 100):
                     self.junctionr = (-x, -y)
-                
+
 
 class LoadBikeFrames(object):
 
@@ -145,7 +144,7 @@ class LoadBikeFrames(object):
                 rect = (x, y, 100, 100)
                 frame = self.img.subsurface(rect)
                 row.append(frame)
-        
+
             self.list.append(row)
 
     def return_frames(self):
@@ -153,14 +152,14 @@ class LoadBikeFrames(object):
 
 
 class LoadTextures(object):
-        
+
     def __init__(self, mm):
         self.list_tex = []
         self.mm = mm
         self.bikeframes = LoadBikeFrames("data/rower2.png").return_frames()
         self.bike_textures = []
         for row_num, row in enumerate(self.bikeframes):
-            for turn, frame in enumerate(row): 
+            for turn, frame in enumerate(row):
                 self.bike_textures.append(BikeTex(frame, row_num, turn))
         self.back = Background("data/tlo5.png", self.win_w, self.win_h)
         self.font = Font("data/unikod.png")
@@ -191,7 +190,6 @@ class LoadTextures(object):
         self.llane2r = Tex(self.mm.lane2r_dic, "data/pas_ulicap.png")
         self.llane1l = Tex(self.mm.lane1l_dic, "data/buspasl.png")
         self.llane2l = Tex(self.mm.lane2l_dic, "data/pas_ulical.png")
-        #self.manhole = Tex(self.mm.manhole_dic, "data/pas_studzienka.png")
         self.tram_obj = Tex(self.mm.tram_dic, "data/pas_tram.png")
         self.pavement = Tex(self.mm.pavr_dic, "data/pas_chodnik.png")
         self.pavementl = Tex(self.mm.pavl_dic, "data/pas_chodnik.png")
@@ -203,8 +201,7 @@ class LoadTextures(object):
         self.frame_endgame = Quad(350, 100, GRAY, 0.7)
         self.health_bar = Quad(50, 6, RED, 0.7)
         self.lives_bar = Quad(6, 6, DARKRED, 0.7)
-        
-        
+
 
 class LoadMenuTextures(object):
 
@@ -224,8 +221,3 @@ class LoadMenuTextures(object):
         self.about = TexSimple(self.about_coords, "data/oidei.png", static=True)
         self.goback = TexSimple(self.goback_coords, "data/wroc.png", static=True)
         self.exit = TexSimple(self.exit_coords, "data/wyjdz.png", static=True)
-
-
-    
-
-
